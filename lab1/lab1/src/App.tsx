@@ -75,7 +75,7 @@ function App() {
     <>
       <h2>Projects List</h2>
       {projects.length === 0 ? <p>No projects found.</p> : null}
-      <ul>
+      <ol>
         {projects.map((proj) => (
           <li key={proj.id}>
             <strong>{proj.name}</strong>: {proj.description} 
@@ -83,7 +83,7 @@ function App() {
             <button onClick={() => deleteProject(proj.id)}>Delete</button>
           </li>
         ))}
-      </ul>
+      </ol>
 
       {editingProject ? (
         <>
