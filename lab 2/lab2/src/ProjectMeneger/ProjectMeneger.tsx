@@ -42,9 +42,25 @@ export class ProjectManager {
   }
   
   addStory(story: Stories) {
-    alert(story);
      this.stories.push(story);
      localStorage.setItem('stories', JSON.stringify(this.stories));
+  }
+
+  deleteStory(id: number) {
+    const index = this.stories.findIndex((p) => p.id === id);
+    this.stories.splice(index, 1);
+    localStorage.setItem('stories', JSON.stringify(this.stories));
+  };
+
+  editStory(id:number , name: string, description: string, priority: string , status: string) {
+    const index = this.stories.findIndex((p) => p.id === id);
+    const story:Stories = this.stories[index];
+    story.name = name;
+    story.description = description;
+    story.priority = priority;
+    story.status = status;
+    this.stories[index] = story;
+    localStorage.setItem('stories', JSON.stringify(this.stories));
   }
 
   getStory(){
