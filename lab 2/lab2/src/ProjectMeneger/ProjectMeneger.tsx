@@ -1,10 +1,14 @@
 import { Project, IProject } from './Project';
+import {Stories} from './Stories';
 
 export class ProjectManager {
   projects: Project[];
+  stories: Stories[];
+  
 
   constructor() {
     this.projects = JSON.parse(localStorage.getItem('projects') || '[]');
+    this.projects = JSON.parse(localStorage.getItem('stories') || '[]');
   }
 
   addProject(project: IProject) {
@@ -35,5 +39,15 @@ export class ProjectManager {
 
   getProjects() {
     return this.projects;
+  }
+  
+  addStory(story: Stories) {
+    alert(story);
+     this.stories.push(story);
+     localStorage.setItem('stories', JSON.stringify(this.stories));
+  }
+
+  getStory(){
+    return this.stories
   }
 }
