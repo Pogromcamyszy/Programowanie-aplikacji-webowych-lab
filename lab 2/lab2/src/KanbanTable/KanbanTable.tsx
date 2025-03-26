@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { use, useState, useEffect } from 'react';
 import { Story, Priority, Status } from '../Stories/Stories.tsx'; 
 import { User } from "../Users/Users.tsx";   
 import { ProjectManager } from '../ProjectMeneger/ProjectMeneger.tsx';
@@ -21,6 +21,11 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ id }) => {
   const [storyOwnerId, setStoryOwnerId] = useState<number>(user.id);
   const [isEdited, setIsEdited] = useState<boolean>(false);
   const [editedId, setEditedId] = useState<number>(0);
+
+  useEffect(() => {
+    setStories(projectManager.getStory());
+  }
+  , []);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStoryName(e.target.value);
@@ -94,7 +99,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ id }) => {
         .filter((story) => story.id_project === id)
         .map((story) => (
           <li key={story.id}>
-            {story.id} <strong>{story.name}</strong>: {story.description} (Priority: {story.priority})
+            {story.id} <strong>{story.name}</strong>: {story.description} (Priority: {story.priority}) (owner {story.ownerId}) (status {story.status})
           </li>
         ))}
     </ul>

@@ -8,7 +8,7 @@ export class ProjectManager {
 
   constructor() {
     this.projects = JSON.parse(localStorage.getItem('projects') || '[]');
-    this.projects = JSON.parse(localStorage.getItem('stories') || '[]');
+    this.stories = JSON.parse(localStorage.getItem('stories') || '[]');
   }
 
   addProject(project: IProject) {

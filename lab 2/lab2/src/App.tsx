@@ -16,7 +16,7 @@ function App() {
   // Load projects once when the component mounts
   useEffect(() => {
     setProjects(projectManager.getProjects());
-  }, []); // Fix: Remove `projects` dependency to prevent infinite loop
+  }, []); 
 
   // Input Handlers
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +49,7 @@ function App() {
   // Update project details
   const updateProject = () => {
     if (editedId !== null) {
-      projectManager.updateProject(editedId, projectName, projectDescription);
+      projectManager.editProject(editedId, projectName, projectDescription);
       setProjects(projectManager.getProjects()); // Fix: Ensure updated projects are displayed
       resetForm();
     }
