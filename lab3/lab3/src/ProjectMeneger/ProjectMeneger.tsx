@@ -46,6 +46,11 @@ export class ProjectManager {
      localStorage.setItem('stories', JSON.stringify(this.stories));
   }
 
+  getStoryById(id: number) {
+    const story = this.stories.find((s) => s.id === id);
+    return story;
+  }
+
   deleteStory(id: number) {
     const index = this.stories.findIndex((p) => p.id === id);
     this.stories.splice(index, 1);

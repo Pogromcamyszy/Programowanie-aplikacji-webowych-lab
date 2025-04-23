@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Story, Priority, Status } from '../Stories/Stories.tsx'; 
 import { User, users, UserRole } from "../Users/Users.tsx";   
 import { ProjectManager } from '../ProjectMeneger/ProjectMeneger.tsx';
+import TaskTable from '../Task/TaskTable.tsx';  
 
 interface ProjectDetailProps {
   id: number;
@@ -95,7 +96,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ id }) => {
   };
 
   const getStoriesByStatus = (status: Status) => {
-    return stories.filter(story => story.status === status);
+    return stories.filter(story => story.status === status && story.projectId === id);  // Filter by projectId
   };
 
   return (
@@ -103,7 +104,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ id }) => {
       {selectedStory !== null ? (
         <div>
           <button onClick={() => setSelectedStory(null)}>Back</button>
-          <h1>Selected Story: {selectedStory.id}</h1>
+          <TaskTable projectId={selectedStory.id} />
         </div>
       ) : (
         <div>
