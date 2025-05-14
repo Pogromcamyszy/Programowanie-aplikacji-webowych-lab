@@ -59,4 +59,20 @@ export class Storage {
     this.stories.push(story);
     this.setStories();
   }
+
+  removeStory(id: number): void {
+    this.stories = this.stories.filter((story) => story.id !== id);
+    this.setStories();
+  }
+  
+  editStory(id: number, title: string, description: string, priority: string, status: string): void {
+    const index = this.stories.findIndex(story => story.id == id);
+    if (index !== -1) {
+      this.stories[index].title = title;
+      this.stories[index].description = description;
+      this.stories[index].priority = priority;
+      this.stories[index].status = status;
+      this.setStories();
+    }
+  }
 }
