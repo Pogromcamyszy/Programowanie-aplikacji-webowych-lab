@@ -1,6 +1,6 @@
 import Projects from "./Projects/ProjectsComponent";
 import Stories from "./Stories/StoriesComponent"
-import Task from "./Task/TaskComponent";
+import Task from "./Task/TasksComponent";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App() {
 

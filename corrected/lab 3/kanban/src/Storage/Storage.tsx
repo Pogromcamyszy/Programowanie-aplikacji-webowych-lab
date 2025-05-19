@@ -1,9 +1,11 @@
 import type { IProject } from "../Projects/Project";
 import type { IStory } from "../Stories/Story";
+import type { ITask } from "../Task/Tasks";
 
 export class Storage {
   private projects: IProject[] = [];
   private stories: IStory[] = [];
+  private tasks: ITask[] = [];
 
   constructor() {
     const data = localStorage.getItem("projects");
@@ -11,6 +13,9 @@ export class Storage {
 
     const storiesData = localStorage.getItem("stories");
     this.stories = storiesData ? JSON.parse(storiesData) : [];
+
+    const tasksData = localStorage.getItem("tasks");
+    this.tasks = tasksData ? JSON.parse(tasksData) : [];
   }
 
   getProjects(): IProject[] {
@@ -34,9 +39,7 @@ export class Storage {
   
   editProject(id: number, name: string, description: string): void {
     alert("Edit Project");
-    alert(id);
     const index = this.projects.findIndex(project => project.id == id);
-    alert(index);
     if (index !== -1) {
     this.projects[index].name = name;
     this.projects[index].description = description;
@@ -74,5 +77,17 @@ export class Storage {
       this.stories[index].status = status;
       this.setStories();
     }
+  }
+ getTasks(storyId: number): ITask[] {
+  const data = localStorage.getItem("tasks");
+  const tasks = data ? JSON.parse(data) : [];
+  return tasks.filter((task) => task.storyId === storyId);
+ }
+  setTasks(): void {
+    localStorage.setItem("tasks", JSON.stringify(this.tasks));
+  }
+  addTask(task: ITask): void {
+    this.tasks.push(task);
+    this.setTasks();
   }
 }

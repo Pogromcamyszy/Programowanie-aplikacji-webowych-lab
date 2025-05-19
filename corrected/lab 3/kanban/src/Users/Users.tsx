@@ -36,3 +36,9 @@ export class User implements IUser {
     return this.role;
   }
 }
+
+export const userList: IUser[] = [
+  new User(1, 'Alice', 'Admin', 'admin'),
+  new User(2, 'Bob', 'Builder', 'developer'),
+  new User(3, 'Charlie', 'Ops', 'devops')
+];
