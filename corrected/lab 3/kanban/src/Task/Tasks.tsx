@@ -34,7 +34,6 @@ export class Task implements ITask {
     priority: TaskPriority,
     storyId: number,
     estimatedHours: number,
-    status: TaskStatus,
     assignedUserId?: number,
   ) {
     this.id = Date.now(); 
@@ -42,16 +41,13 @@ export class Task implements ITask {
     this.description = description;
     this.priority = priority;
     this.storyId = storyId;
+    this.status = 'todo';
     this.estimatedHours = estimatedHours;
-    this.status = status;
     this.createdAt = new Date().toISOString();
     this.assignedUserId = assignedUserId;
     if(assignedUserId) {
       this.status = 'doing';
       this.startedAt = new Date().toISOString();
-    }
-    if(status === 'done') {
-      this.finishedAt = new Date().toISOString();
     }
   }
 }

@@ -40,5 +40,8 @@ export class User implements IUser {
 export const userList: IUser[] = [
   new User(1, 'Alice', 'Admin', 'admin'),
   new User(2, 'Bob', 'Builder', 'developer'),
-  new User(3, 'Charlie', 'Ops', 'devops')
+  new User(3, 'Charlie', 'Ops', 'devops'),
+  new User(4, 'Dave', 'Developer', 'admin'),
+  new User(5, 'Eve', 'Engineer', 'admin'),
 ];
+

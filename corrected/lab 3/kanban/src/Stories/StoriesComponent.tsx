@@ -7,7 +7,7 @@ import { Story } from "../Stories/Stories";
 import { Storage } from "../Storage/storage";
 
 function Stories() {
-  const { id } = useParams();
+  const { projectId : id } = useParams();
   const projectId = id ? parseInt(id) : null;
   const user = new User(1, "John", "Doe", "admin");
   const userManager = new UserManager(user);
@@ -145,7 +145,7 @@ function Stories() {
                     .filter((story) => story.status === category)
                     .map((story) => (
                       <div key={story.id}>
-                        <Link to={`/task/${story.id}`}>
+                        <Link to={`/${projectId}/story/${story.id}/task`}>
                         <h4>{story.title}</h4>
                         <p>{story.description}</p>
                         <p>Priority: {story.priority}</p>

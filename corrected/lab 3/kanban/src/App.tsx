@@ -9,8 +9,9 @@ function App() {
         <Router>
           <Routes>
            <Route path="/" element={<Projects/>}/>
-           <Route path="/stories/:id" element={<Stories />} />
-           <Route path="/task/:id" element={<Task />} />
+           <Route path="/:projectId/story" element={<Stories />} />
+           <Route path="/:projectId/story/:storyId/task" element={<Task />} />
+           <Route path="/:projectId/story/:storyId/task/:taskId" element={<Task />} />
            </Routes>
         </Router>
     </>
