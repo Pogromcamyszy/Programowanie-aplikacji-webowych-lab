@@ -78,6 +78,9 @@ export class Storage {
       this.setStories();
     }
   }
+
+
+
  getTasks(storyId: number): ITask[] {
   const data = localStorage.getItem("tasks");
   const tasks = data ? JSON.parse(data) : [];
@@ -90,4 +93,49 @@ export class Storage {
     this.tasks.push(task);
     this.setTasks();
   }
+  removeTask(id: number): void {
+    this.tasks = this.tasks.filter((task) => task.id !== id);
+    this.setTasks();
+  }
+
+  editTask(
+  id: number,
+  name: string,
+  description: string,
+  assignedUserId?: number,
+  estimatedHours: number,
+  priority: string,
+  status: string
+): void {
+  const index = this.tasks.findIndex(task => task.id === id);
+  if (index === -1) return;
+
+  const task = this.tasks[index];
+
+  task.name = name;
+  task.description = description;
+  task.priority = priority;
+  task.estimatedHours = estimatedHours;
+
+  if (!assignedUserId) {
+    task.assignedUserId = undefined;
+    task.status = "todo";
+    task.startedAt = undefined;
+    task.finishedAt = undefined;
+  } else {
+    task.assignedUserId = assignedUserId;
+
+    if (status === "done") {
+      task.status = "done";
+      task.startedAt = task.startedAt || new Date().toISOString();
+      task.finishedAt = new Date().toISOString();
+    } else {
+      task.status = "doing";
+      task.startedAt = task.startedAt || new Date().toISOString();
+      task.finishedAt = undefined;
+    }
+  }
+
+  this.setTasks();
+}
 }
