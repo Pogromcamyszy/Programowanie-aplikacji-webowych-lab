@@ -28,10 +28,7 @@ export class Storage {
   }
   
   editProject(id: number, name: string, description: string): void {
-    alert("Edit Project");
-    alert(id);
     const index = this.projects.findIndex(project => project.id == id);
-    alert(index);
     if (index !== -1) {
     this.projects[index].name = name;
     this.projects[index].description = description;

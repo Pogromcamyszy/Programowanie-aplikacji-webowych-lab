@@ -37,7 +37,7 @@ export class User implements IUser {
   }
 }
 
-export const userList: IUser[] = [
+const userList: IUser[] = [
   new User(1, 'Alice', 'Admin', 'admin'),
   new User(2, 'Bob', 'Builder', 'developer'),
   new User(3, 'Charlie', 'Ops', 'devops'),
@@ -45,3 +45,20 @@ export const userList: IUser[] = [
   new User(5, 'Eve', 'Engineer', 'admin'),
 ];
 
+export class UserManager {
+  private users: IUser[];
+
+  constructor() {
+    this.users = userList;
+  }
+
+  getUsers(): IUser[] {
+    return this.users;
+  }
+
+  getDevelopersAndDevOps(): IUser[] {
+    return this.users.filter(
+      (user) => user.getRole() === 'developer' || user.getRole() === 'devops'
+    );
+  }
+}
