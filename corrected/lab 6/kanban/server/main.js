@@ -4,8 +4,6 @@ const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const app = express()
 const port = 3000
-const uri = "mongodb+srv://mateuszpara:mateuszpara@cluster0.zpl4ctz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-const projectsRouter = require('./projects');
 
 app.use(express.json());
 app.use(cookieParser());
@@ -15,21 +13,6 @@ const SECRET_KEY = process.env.JWT_SECRET_KEY;
 // axious interceptor to check if the token is expired
 // backend decode the jwt -> if expired, 401 error
 
-async function connectToDatabase() {
-    const { MongoClient } = require('mongodb');
-    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
-    try {
-        await client.connect();
-        console.log("Connected to MongoDB");
-        return client;
-    } catch (error) {
-        console.error("Error connecting to MongoDB:", error);
-        throw error;
-    }
-}
-
-
 userList = [
     { 'id': 1, 'firstName': 'Alice', 'lastName': 'Admin', 'role': 'admin', 'password': 'admin123' },
     { 'id': 2, 'firstName': 'Bob', 'lastName': 'Builder', 'role': 'developer', 'password': 'admin123' },
@@ -37,23 +20,6 @@ userList = [
     { 'id': 4, 'firstName': 'Dave', 'lastName': 'Developer', 'role': 'admin', 'password': 'admin123' },
     { 'id': 5, 'firstName': 'Eve', 'lastName': 'Engineer', 'role': 'admin', 'password': 'admin123' },
 ]
-
-const dbMiddleware = async (req, res, next) => {
-    if (!req.db) {
-        try {
-            const client = await connectToDatabase();
-            req.db = client.db('Cluster0');
-            next();
-        } catch (error) {
-            res.status(500).json({ message: 'Database connection error' });
-        }
-    } else {
-        next();
-    }
-}
-
-app.use(dbMiddleware);
-app.use('/projects', projectsRouter);
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
@@ -83,9 +49,9 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/user', authenticateToken, (req, res) => {
-    const token = req.headers['authorization']?.split(' ')[1];
-    const decoded = jwt.decode(token);
-    res.status(200).json({ user: decoded });
+   const token = req.headers['authorization']?.split(' ')[1];
+   const decoded = jwt.decode(token);
+   res.status(200).json({ user: decoded });
 });
 
 app.post('/refresh-token', (req, res) => {
@@ -135,4 +101,3 @@ function generateRefreshToken(user) {
         expiresIn: '7d',
     });
 }
-
