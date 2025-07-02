@@ -39,6 +39,7 @@ export const createStory = async (story: Omit<IStory, '_id'>): Promise<IStory> =
         throw error;
     }
 }
+
 export const updateStory = async (storyId: string, story: Omit<IStory, '_id'>): Promise<IStory> => {
     try {
         const response = await axiosInstance.put(`/projects/${story.projectId}/stories/${storyId}`, story);
@@ -48,6 +49,18 @@ export const updateStory = async (storyId: string, story: Omit<IStory, '_id'>): 
         return response.data;
     } catch (error) {
         console.error("Error updating story:", error);
+        throw error;
+    }
+}
+
+export const deleteStory = async ({ projectId, storyId }: { projectId: string, storyId: string }): Promise<void> => {
+    try {
+        const response = await axiosInstance.delete(`/projects/${projectId}/stories/${storyId}`);
+        if (response.status !== 200) {
+            throw new Error("Failed to delete story");
+        }
+    } catch (error) {
+        console.error("Error deleting story:", error);
         throw error;
     }
 }

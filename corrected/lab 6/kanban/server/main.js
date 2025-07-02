@@ -4,7 +4,6 @@ require('./db/db.js'); // Ensure this file connects to MongoDB
 const express = require('express')
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const jwt = require('jsonwebtoken');
 const app = express()
 const port = 3000
 
@@ -19,7 +18,6 @@ const { generateToken } = require('./utils/auth.js');
 app.use(express.json());
 app.use(cookieParser());
 
-const SECRET_KEY = process.env.JWT_SECRET_KEY;
 // frontend decode the jwt before request -> if expired, post to refresh token endpoint
 // axious interceptor to check if the token is expired
 // backend decode the jwt -> if expired, 401 error
@@ -34,10 +32,10 @@ app.listen(port, () => {
 })
 
 
-app.use(cors());
+app.use(cors({ credentials: true, origin: 'http://localhost:5173', methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
 
 
-app.use('/', userController);
+app.use('/users', userController);
 app.use('/projects', projectController);
 app.use('/projects/:projectId/stories', storyController);
 app.use('/projects/:projectId/stories/:storyId/tasks', tasksController);
@@ -45,24 +43,4 @@ app.use('/projects/:projectId/stories/:storyId/tasks', tasksController);
 
 
 
-app.post('/refresh-token', (req, res) => {
-    const token = req.cookies.token;
-    if (!token) {
-        return res.status(401).json({ message: 'No token provided' });
-    }
-
-    jwt.verify(token, SECRET_KEY, (err, decoded) => {
-        if (err) {
-            return res.status(401).json({ message: 'Invalid token' });
-        }
-
-        const user = userList.find(user => user.id === decoded.id);
-        if (!user) {
-            return res.status(401).json({ message: 'User not found' });
-        }
-
-        const newToken = generateToken(user);
-        res.status(200).json({ token: newToken });
-    });
-});
 

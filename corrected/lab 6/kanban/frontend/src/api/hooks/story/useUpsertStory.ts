@@ -17,6 +17,7 @@ export const useUpsertStory = (id?: string) => {
             console.error("Error creating project:", error);
         },
         onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ['story'] })
             queryClient.invalidateQueries({ queryKey: ['stories'] })
             queryClient.invalidateQueries({ queryKey: ['project'] })
 

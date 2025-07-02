@@ -2,19 +2,33 @@ import { useParams, Link } from "react-router-dom";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import { useGetStories } from "../api/hooks/story/useGetStories";
 import type { IStory } from "./Stories";
-
-// Login
-
-// Project's stories component
-
-
+import { useDeleteStory } from "../api/hooks/useDeleteStory";
 
 function Story({ story }: { story: IStory }) {
+  const { mutateAsync: deleteStory } = useDeleteStory()
+
   return (<Row key={story._id} className="mb-2">
     <Card>
       <Card.Header>{story.title}</Card.Header>
       <Card.Body>
-        {story.description}
+        <div>
+          Priority: {story.priority}
+        </div>
+        <div>
+          {story.description}
+        </div>
+        <div>
+          {story.ownerId}
+        </div>
+        <div>
+          <Link to={`/projects/${story.projectId}/story/${story._id}/task`}>
+            <Button variant="primary">View Story</Button>
+          </Link>
+          <Link to={`/projects/${story.projectId}/story/${story._id}`} className="ms-2">
+            <Button variant="primary">Edit Story</Button>
+          </Link>
+          <Button variant="danger" className="m-2" onClick={() => deleteStory({ projectId: story.projectId, storyId: story._id })}>Delete</Button>
+        </div>
       </Card.Body>
     </Card>
   </Row>
@@ -23,9 +37,7 @@ function Story({ story }: { story: IStory }) {
 
 function Stories() {
   const { projectId } = useParams<{ projectId: string }>();
-  const { data: stories, isLoading, error } = useGetStories(projectId!);
-
-  console.log("Stories data:", stories);
+  const { data: stories, isLoading } = useGetStories(projectId!);
 
   if (isLoading) {
     return <h1>Loading...</h1>;
@@ -71,8 +83,7 @@ function Stories() {
           </Col>
         </Card.Body>
       </Card>
-
-    </Container >
+    </Container>
   )
 
 }

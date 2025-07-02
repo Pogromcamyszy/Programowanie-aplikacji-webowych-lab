@@ -3,12 +3,30 @@ const router = express.Router({ mergeParams: true });
 const Task = require('../models/task.js');
 const User = require('../models/user.js');
 
+const { ObjectId } = require('mongoose').Types;
+
 router.get('/', async (req, res) => {
     const { storyId } = req.params;
 
     try {
-        const stories = await Task.find({ storyId });
-        res.status(200).json(stories);
+        const stories = await Task.aggregate([
+            { $match: { storyId: new ObjectId(storyId) } },
+            {
+                "$group": {
+                    _id: null,
+                    todo: {
+                        $push: { $cond: [{ $eq: ["$status", "todo"] }, "$$ROOT", "$$REMOVE"] }
+                    },
+                    "in-progress": {
+                        $push: { $cond: [{ $eq: ["$status", "in-progress"] }, "$$ROOT", "$$REMOVE"] }
+                    },
+                    done: {
+                        $push: { $cond: [{ $eq: ["$status", "done"] }, "$$ROOT", "$$REMOVE"] }
+                    },
+                }
+            }
+        ]);
+        res.status(200).json(stories[0] || { todo: [], "in-progress": [], done: [] });
     } catch (error) {
         console.error("Error fetching stories:", error);
         res.status(500).json({ message: 'Error fetching stories' });
@@ -30,8 +48,6 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const { storyId } = req.params;
-
-
 
     try {
         await upsertTask({ ...req.body, storyId }, res);

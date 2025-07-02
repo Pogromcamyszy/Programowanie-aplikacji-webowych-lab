@@ -1,34 +1,33 @@
 import { Button, Card, Container, InputGroup } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate, useParams } from "react-router-dom"
-import { useUpsertProject } from "../api/hooks/useUpsertProject";
+
 import { toast } from "react-toastify";
-import { useGetProject } from "../api/hooks/useGetProject";
+
 import { useEffect, useMemo } from "react";
-import type { IStory } from "./Stories";
-import { useUpsertStory } from "../api/hooks/story/useUpsertStory";
-import { useGetStory } from "../api/hooks/story/useGetStory";
+import type { ITask } from "./Tasks";
+import { useGetTask } from "../api/hooks/useGetTask";
+import { useUpsertTask } from "../api/hooks/useUpsertTask";
 
-type StoryFormValues = Omit<IStory, '_id'>;
+type StoryFormValues = Omit<ITask, '_id'>;
 
-export const StoryForm = () => {
-    const { projectId, storyId } = useParams<{ projectId: string, storyId: string }>()
-
-    const { data, isLoading } = useGetStory({ projectId, storyId })
+export const TaskForm = () => {
+    const { projectId, storyId, taskId } = useParams<{ projectId: string, storyId: string, taskId: string }>()
+    const { data, isLoading } = useGetTask({ projectId, storyId, taskId })
 
     const { handleSubmit, register, reset } = useForm<StoryFormValues>()
 
-    const { mutateAsync, isPending } = useUpsertStory(storyId)
+    const { mutateAsync, isPending } = useUpsertTask({ projectId: projectId!, storyId: storyId! }, taskId)
 
     const navigate = useNavigate()
 
     const onSubmit = async (data: StoryFormValues) => {
         console.log("Form submitted with data:", data);
 
-        await mutateAsync({ ...data, projectId: projectId! }, {
+        await mutateAsync({ ...data, }, {
             onSuccess: () => {
                 toast("Story created successfully!")
-                navigate('/projects/' + projectId + '/story')
+                navigate('/projects/' + projectId + '/story/' + storyId + '/task')
             }
         });
     }
@@ -45,13 +44,10 @@ export const StoryForm = () => {
         if (projectId && data) {
             console.log("Resetting form with data:", data);
             reset({
-                title: data.title,
-                description: data.description,
-                status: data.status,
-                priority: data.priority
+                ...data
             })
         }
-    }, [projectId, data])
+    }, [projectId, storyId, taskId, data])
 
 
     if (projectId && isLoading) {
@@ -71,22 +67,30 @@ export const StoryForm = () => {
                 </Card.Header>
                 <Card.Body>
                     <form onSubmit={handleSubmit(onSubmit)} key={projectId}>
-                        <InputGroup.Text>Project Name</InputGroup.Text>
-                        <input type="text" className="form-control mb-3" placeholder="Enter project name" {...register('title')} />
+                        <InputGroup.Text>Task Name</InputGroup.Text>
+                        <input type="text" className="form-control mb-3" placeholder="Enter task name" {...register('name')} />
                         <InputGroup.Text>Project Descriptipon</InputGroup.Text>
-                        <input type="text" className="form-control mb-3" placeholder="Enter project description" {...register('description')} />
-                        <InputGroup.Text>Story Status</InputGroup.Text>
+                        <input type="text" className="form-control mb-3" placeholder="Enter task description" {...register('description')} />
+                        <InputGroup.Text>Estimated hours</InputGroup.Text>
+                        <input type="number" className="form-control mb-3" placeholder="Enter task description" {...register('estimatedHours')} />
+
+                        <InputGroup.Text>Task Status</InputGroup.Text>
                         <select className="form-select mb-3" {...register('status')}>
                             <option value="todo">TODO</option>
-                            <option value="doing">DOING</option>
+                            <option value="in-progress">DOING</option>
                             <option value="done">DONE</option>
                         </select>
+
                         <InputGroup.Text>Story Priority</InputGroup.Text>
                         <select className="form-select mb-3" {...register('priority')}>
                             <option value="low">LOW</option>
                             <option value="medium">MEDIUM</option>
                             <option value="high">HIGH</option>
                         </select>
+
+                        <InputGroup.Text>Assigned User</InputGroup.Text>
+                        <input type="text" className="form-control mb-3" placeholder="Enter assigned user ID" {...register('assignedUserId')} />
+
                         <Button type="submit" disabled={isPending} className="btn btn-primary mt-2">
                             {isPending ? isPendingText : upsertText}
                         </Button>

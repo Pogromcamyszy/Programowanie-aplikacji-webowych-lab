@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 const Story = require('../models/story.js');
+const { authenticateToken } = require('../utils/auth.js');
 
 const { ObjectId } = require('mongoose').Types;
 
@@ -39,10 +40,29 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
+router.get('/:id', async (req, res) => {
+    const { projectId, id } = req.params;
+
+    try {
+        const story = await Story.findOne({ projectId: projectId, _id: id });
+
+        if (!story) {
+            return res.status(404).json({ message: 'Story not found' });
+        }
+
+        res.status(200).json(story);
+    } catch (error) {
+        console.error("Error fetching stories:", error);
+        res.status(500).json({ message: 'Error fetching stories' });
+    }
+});
+
+router.post('/', authenticateToken, async (req, res) => {
     const { title, description, priority, status } = req.body;
 
     const { projectId } = req.params;
+
+    const { user } = req;
 
     console.log("Project ID:", projectId);
 
@@ -50,9 +70,8 @@ router.post('/', async (req, res) => {
         return res.status(400).json({ message: 'Story title, description, and project ID are required' });
     }
 
-
     // FIX THIS => use user from the auth middleware
-    const ownerId = '6856977a991f7654430220fb'
+    const ownerId = user._id
 
     try {
         const newStory = new Story({ title, description, priority, status, ownerId, projectId });
